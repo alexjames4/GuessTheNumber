@@ -27,6 +27,12 @@
             string guessTheNumber =
                 "Guess the number: ";
 
+            string numberOutOfBounds =
+                "You entered {0}. This is not within 1-50. You have {1} guess remaining:";
+
+            string wrongDataType =
+                "You didnt enter an integer. This is not within 1-50. You have {0} guess remaining:";
+
             string successMessage =
                 "Congratulations you have guessed the correct number!";
 
@@ -78,20 +84,31 @@
             for (i = 0; i < guessesRemaining; i++)
             {
                 Console.WriteLine(guessTheNumber);
-                int guess = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    int guess = Convert.ToInt32(Console.ReadLine());
 
-                if (guess == randomNum)
-                {
-                    Console.WriteLine(successMessage);
-                    break;
-                } 
-                else if (randomNum < guess) 
-                {
-                    Console.WriteLine(string.Format(lowerMessage, guess, guessesRemaining-(1+i)));
+                    if(guess < 1 || guess >50)
+                    {
+                        Console.WriteLine(string.Format(numberOutOfBounds, guess, guessesRemaining - (1 + i)));
+                    }
+                    else if (guess == randomNum)
+                    {
+                        Console.WriteLine(successMessage);
+                        break;
+                    } 
+                    else if (randomNum < guess) 
+                    {
+                        Console.WriteLine(string.Format(lowerMessage, guess, guessesRemaining-(1+i)));
+                    }
+                    else if (randomNum > guess)
+                    {
+                        Console.WriteLine(string.Format(higherMessage, guess, guessesRemaining - (1 + i)));
+                    }
                 }
-                else if (randomNum > guess)
+                catch (FormatException) 
                 {
-                    Console.WriteLine(string.Format(higherMessage, guess, guessesRemaining - (1 + i)));
+                    Console.WriteLine(string.Format(wrongDataType, guessesRemaining - (1 + i)));
                 }
             }
 
@@ -129,6 +146,10 @@
             }
         }
         catch (InvalidAnswerException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        catch (FormatException ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
